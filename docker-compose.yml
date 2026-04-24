@@ -1,19 +1,17 @@
 services:
-  # 1. 資料庫
-db:
-  image: postgres:16
-  container_name: contact-db
-  restart: always
-  environment:
-    POSTGRES_USER: myuser
-    POSTGRES_PASSWORD: mypassword
-    POSTGRES_DB: contact_list
-  volumes:
-    - ./postgres_data:/var/lib/postgresql/data
-  networks:
-    - my-app-network
+  db:
+    image: postgres:16
+    container_name: contact-db
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: contact_list
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - my-app-network
 
-  # 2. Node.js 後端 API
   app:
     build: .
     container_name: contact-api
@@ -26,9 +24,8 @@ db:
     depends_on:
       - db
     networks:
-      - my-app-network # 加入網路
+      - my-app-network
 
-  # 3. Nginx 反向代理
   nginx:
     image: nginx:alpine
     container_name: contact-nginx
@@ -40,9 +37,8 @@ db:
     depends_on:
       - app
     networks:
-      - my-app-network # 加入網路
+      - my-app-network
 
-# 定義網路
 networks:
   my-app-network:
     driver: bridge
