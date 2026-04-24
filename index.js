@@ -14,16 +14,8 @@ const pool = new Pool({
 app.use(express.json());
 
 // 初始化資料表
-// index.js
-
-// 將連線邏輯包裝起來
-const connectWithRetry = async () => {
+const initDb = async () => {
   try {
-    console.log("正在嘗試連線到資料庫...");
-    await pool.query('SELECT 1'); // 測試性連線
-    console.log("資料庫連線成功！");
-    
-    // 連線成功後，再初始化表格
     await pool.query(`
       CREATE TABLE IF NOT EXISTS contacts (
         id SERIAL PRIMARY KEY,
@@ -33,14 +25,10 @@ const connectWithRetry = async () => {
     `);
     console.log("資料庫表格已準備就緒！");
   } catch (err) {
-    console.error("連線失敗，5秒後重試...", err.message);
-    // 等待 5 秒後再呼叫自己
-    setTimeout(connectWithRetry, 5000);
+    console.error("資料庫連線失敗：", err.message);
   }
 };
-
-// 啟動時呼叫這個重試函數
-connectWithRetry();
+initDb();
 
 // GET: 取得所有聯絡人
 app.get('/contacts', async (req, res) => {
