@@ -1,17 +1,17 @@
 services:
   # 1. 資料庫
-  db:
-    image: postgres:latest
-    container_name: contact-db
-    restart: always
-    environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: contact_list
-    volumes:
-      - ./postgres_data:/var/lib/postgresql/data
-    networks:
-      - my-app-network # 加入網路
+db:
+  image: postgres:16
+  container_name: contact-db
+  restart: always
+  environment:
+    POSTGRES_USER: myuser
+    POSTGRES_PASSWORD: mypassword
+    POSTGRES_DB: contact_list
+  volumes:
+    - ./postgres_data:/var/lib/postgresql/data
+  networks:
+    - my-app-network
 
   # 2. Node.js 後端 API
   app:
