@@ -1,0 +1,39 @@
+services:
+  # 1. 資料庫
+  db:
+    image: postgres:latest
+    container_name: contact-db
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: contact_list
+    # 建議：生產環境下，不需要把 5432 開放給外部，只讓容器內部連線即可
+    # 刪除 ports 區塊可以提高安全性
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  # 2. Node.js 後端 API
+  app:
+    build: .
+    container_name: contact-api
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_NAME: contact_list
+    depends_on:
+      - db
+
+  # 3. Nginx 反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: contact-nginx
+    restart: always
+    ports:
+      - "80:80" # 對外開放 80 埠給瀏覽器/Cloudflare
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app

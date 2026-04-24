@@ -1,0 +1,5 @@
+node_modules
+npm-debug.log
+postgres_data/
+.git
+.env
